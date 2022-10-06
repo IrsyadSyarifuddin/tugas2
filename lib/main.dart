@@ -15,87 +15,141 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Montserrat',
       ),
-      home: const MyHomePage(),
+      home: Page1(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class Page1 extends StatefulWidget {
+  Page1({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _Page1State();
+}
+
+class _Page1State extends State<Page1> {
+  int counter = 0;
+  String y = '';
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-        body: Stack(
+      appBar: AppBar(
+        title: Text('Latihan Page 1'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height/2,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(bottomRight: Radius.circular(50)),
-                child: Image.asset(
-                    'assets/gambar.jpg',
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        'Hi!, Doraemon',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/avatar.jpg',
-                        ),
-                        radius: 40,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50.0),
-                      color: Colors.white
-                    ),
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: const [
-                          TextButton(
-                              onPressed: null,
-                              child: Text('Hallo Button')
-                          ),
-                          TextButton(
-                              onPressed: null,
-                              child: Text('Pencet Saya')
-                          ),
-                          FloatingActionButton.extended(
-                              label: Text('Pesan Test Sekarang'),
-                              backgroundColor: Colors.orange,
-                              icon: Icon(
-                                Icons.abc,
-                                size: 30,
-                              ),
-                              onPressed: null,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Text('Saya Dipanggil Lagi sebanyak $counter'),
+            ElevatedButton(
+                onPressed: () async {
+                  final data = await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Page2()));
+                  setState(() {
+                    counter++;
+                    if (data != null) {
+                      y = data;
+                    } else {
+                      y = '';
+                    }
+                  });
+                },
+                child: Text('Navigation to Page 2')),
+            Visibility(
+                visible: y.isNotEmpty,
+                child: Text('Saya kembali dari $y')
             )
           ],
-        ) // This trailing comma makes auto-formatting nicer for build methods.
+        ),
+      ),
+    );
+  }
+}
+
+class Page2 extends StatefulWidget {
+  const Page2({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _Page2State();
+}
+
+class _Page2State extends State<Page2> {
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(context, "dari halaman 2");
+          return false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+              title: Text('Latihan Page 2')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => Page3()));
+                  },
+                  child: Text('Navigation to Page 3'),
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, 'Dari Halaman 2');
+                    },
+                    child: Text('Back to Page 1'))
+              ],
+            ),
+          ),
+        ));
+  }
+}
+
+class Page3 extends StatelessWidget {
+  Page3({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Latihan Page 3'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Page4()
+              )
+            );
+          },
+          child: Text('Navigation to Page4'),
+        ),
+      ),
+    );
+  }
+}
+
+class Page4 extends StatelessWidget {
+  Page4({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kembali ke Halaman Awal'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
+          child: Text('Kembali ke Halaman Awal'),
+        ),
+      ),
     );
   }
 }
