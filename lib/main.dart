@@ -67,14 +67,9 @@ class _Page1State extends State<Page1> {
   }
 }
 
-class Page2 extends StatefulWidget {
+class Page2 extends StatelessWidget {
   const Page2({Key? key}) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => _Page2State();
-}
-
-class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
